@@ -60,6 +60,7 @@ Run exploit mode with gadget `cb1v18` with reverse shell to `127.0.0.1:7777`
 ```
 ## 🔮Image
 ![image](image/logi.png)
+![image](image/dnslog.png)
 ## 💻See also
 [GadgetProbe](https://github.com/BishopFox/GadgetProbe)
 
