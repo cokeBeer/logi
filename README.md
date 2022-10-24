@@ -1,8 +1,8 @@
-# LOGI
+# ☕️LOGI
 Logi is a ldap server focusing on ldap deserialize recon and exploit.
 
 
-- [LOGI](#logi)
+- [☕️LOGI](#️logi)
   - [✨Get started](#get-started)
   - [⚙️How it work](#️how-it-work)
   - [🚀Examples](#examples)
