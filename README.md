@@ -64,3 +64,5 @@ Run exploit mode with gadget `cb1v18` with reverse shell to `127.0.0.1:7777`
 [GadgetProbe](https://github.com/BishopFox/GadgetProbe)
 
 [JNDI-Inject-Exploit](https://github.com/exp1orer/JNDI-Inject-Exploit)
+
+[Urldns](https://github.com/kezibei/Urldns)
