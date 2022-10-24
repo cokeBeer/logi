@@ -10,7 +10,10 @@ Logi is a ldap server focusing on ldap deserialize recon and exploit.
   - [💻See also](#see-also)
 
 ## ✨Get started
-Download logi from release.
+Download logi from release, or use `go install`
+```
+go install github.com/cokeBeer/logi/cmd/logi@latest
+```
 Use `-h` to show help.
 ```
 $ ./logi -h
