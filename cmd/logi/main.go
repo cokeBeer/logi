@@ -36,9 +36,10 @@ func readConfig() *goflags.FlagSet {
 	)
 
 	flagSet.CreateGroup("exploit", "exploit config",
-		flagSet.StringVarP(&option.Gadget, "gadget", "g", "", "gadget for exploit, support: cb1v18, cb1v19"),
+		flagSet.StringVarP(&option.Gadget, "gadget", "g", "", "gadget for exploit, support: cb1v18, cb1v19, wl1"),
 		flagSet.StringVarP(&option.Command, "command", "c", "", "command for exploit"),
 		flagSet.StringVarP(&option.Shell, "shell", "s", "", "reverse shell, e.g. 127.0.0.1:7777"),
+		flagSet.StringVarP(&option.Binary, "binary", "b", "", "payload path for exploit"),
 	)
 
 	flagSet.Parse()

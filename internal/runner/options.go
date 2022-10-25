@@ -10,4 +10,5 @@ type Option struct {
 	Gadget   string
 	Command  string
 	Shell    string
+	Binary   string
 }

