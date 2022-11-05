@@ -1,5 +1,7 @@
 package wordlist
 
+import "strings"
+
 const (
 	MAVEN_DICT     = "mvn"
 	YSOSERIAL_DICT = "yso"
@@ -147,14 +149,34 @@ var (
 	}
 )
 
+type DictManager struct {
+	dict map[string]*DictWrapper
+}
+
 type DictWrapper struct {
 	l    int
 	dict *[]string
 	name string
 }
 
-type DictManager struct {
-	dicts map[string]*DictWrapper
+func (m *DictManager) Set(name string, dict []string) {
+	m.dict[name] = &DictWrapper{l: len(dict), dict: &dict, name: name}
+}
+
+func (m *DictManager) Get(name string) (*DictWrapper, bool) {
+	if dict, ok := m.dict[name]; ok {
+		return dict, true
+	}
+	return nil, false
+}
+
+func (m *DictManager) String() string {
+	var builder strings.Builder
+	for k, _ := range m.dict {
+		builder.WriteString(k)
+		builder.WriteString(", ")
+	}
+	return strings.TrimSuffix(builder.String(), ", ")
 }
 
 func (w *DictWrapper) Len() int {
@@ -169,20 +191,12 @@ func (w *DictWrapper) Choose(i int) string {
 	return (*w.dict)[i]
 }
 
-func (m *DictManager) Set(name string, dict []string) {
-	m.dicts[name] = &DictWrapper{l: len(dict), dict: &dict, name: name}
-}
-
-func (m *DictManager) Get(name string) (*DictWrapper, bool) {
-	if dict, ok := m.dicts[name]; ok {
-		return dict, true
-	}
-	return nil, false
-}
-
 func init() {
-	Manager.dicts = make(map[string]*DictWrapper)
+	Manager.dict = make(map[string]*DictWrapper)
+	// maven popular class
 	Manager.Set(MAVEN_DICT, mvn)
+	// ysoserial gadget class
 	Manager.Set(YSOSERIAL_DICT, yso)
+	// jndi exploit class
 	Manager.Set(JNDI_DICT, jndi)
 }

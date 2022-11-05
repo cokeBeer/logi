@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"strings"
@@ -21,7 +22,14 @@ func New(option *Option) *Runner {
 	s := server.New(option.IP, option.Port)
 	r.s = s
 
+	s.Type = option.Type
+
 	s.Mode = option.Mode
+
+	if s.Type != server.TYPE_LDAP && s.Type != server.TYPE_MYSQL {
+		fmt.Println(s.Type)
+		log.Fatal("unsupported type, exit")
+	}
 
 	if s.Mode == -1 {
 		log.Fatal("no mode provided, exit")
@@ -122,5 +130,15 @@ func New(option *Option) *Runner {
 }
 
 func (r *Runner) Run() {
-	r.s.StartLDAP()
+
+	if r.s.Type == server.TYPE_LDAP {
+
+		r.s.StartMySQL()
+
+	} else if r.s.Type == server.TYPE_MYSQL {
+
+		r.s.StartMySQL()
+
+	}
+
 }

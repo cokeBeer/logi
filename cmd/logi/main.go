@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/cokeBeer/logi/internal/runner"
+	"github.com/cokeBeer/logi/pkg/payload"
+	"github.com/cokeBeer/logi/pkg/wordlist"
 	"github.com/projectdiscovery/goflags"
 )
 
@@ -18,10 +20,11 @@ func main() {
 func readConfig() *goflags.FlagSet {
 
 	flagSet := goflags.NewFlagSet()
-	flagSet.SetDescription(`Logi is a ldap server focusing on ldap deserialize recon and exploit.`)
+	flagSet.SetDescription(`Logi is a LDAP/MySQL server focusing on pingback deserialize recon and exploit.`)
 
-	flagSet.CreateGroup("mode", "mode config",
-		flagSet.IntVarP(&option.Mode, "mode", "m", 0, "1 for poc, 2 for probe, 3 for exploit"),
+	flagSet.CreateGroup("basic", "basic config",
+		flagSet.IntVarP(&option.Mode, "mode", "m", 0, "1 for poc , 2 for probe, 3 for exploit"),
+		flagSet.IntVarP(&option.Type, "type", "t", 0, "1 for ldap, 2 for mysql"),
 	)
 
 	flagSet.CreateGroup("serve", "serve config",
@@ -31,12 +34,12 @@ func readConfig() *goflags.FlagSet {
 
 	flagSet.CreateGroup("probe", "probe config",
 		flagSet.StringVarP(&option.Domain, "domain", "d", "", "domain for dns lookup"),
-		flagSet.StringVarP(&option.DictName, "dictname", "w", "yso", "wordlist name for probe, support: yso, jndi, mvn"),
+		flagSet.StringVarP(&option.DictName, "dictname", "w", "yso", "wordlist name for probe, support: "+wordlist.Manager.String()),
 		flagSet.StringVarP(&option.DictPath, "dictpath", "wp", "", "wordlist path for probe"),
 	)
 
 	flagSet.CreateGroup("exploit", "exploit config",
-		flagSet.StringVarP(&option.Gadget, "gadget", "g", "", "gadget for exploit, support: cb1v18, cb1v19, wl1"),
+		flagSet.StringVarP(&option.Gadget, "gadget", "g", "", "gadget for exploit, support: "+payload.IExecManager.String()),
 		flagSet.StringVarP(&option.Command, "command", "c", "", "command for exploit"),
 		flagSet.StringVarP(&option.Shell, "shell", "s", "", "reverse shell, e.g. 127.0.0.1:7777"),
 		flagSet.StringVarP(&option.Binary, "binary", "b", "", "payload path for exploit"),

@@ -11,4 +11,5 @@ type Option struct {
 	Command  string
 	Shell    string
 	Binary   string
+	Type     int
 }

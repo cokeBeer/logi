@@ -2,6 +2,7 @@ package payload
 
 import (
 	"encoding/binary"
+	"strings"
 )
 
 var (
@@ -44,6 +45,15 @@ func (m *ExecManager) GetCustom() (*ExecWrapper, bool) {
 	return nil, false
 }
 
+func (m *ExecManager) String() string {
+	var builder strings.Builder
+	for k, _ := range m.dict {
+		builder.WriteString(k)
+		builder.WriteString(", ")
+	}
+	return strings.TrimSuffix(builder.String(), ", ")
+}
+
 func (w *ExecWrapper) Exec(command string) []byte {
 	return w.f(command)
 }
@@ -54,8 +64,11 @@ func (w *ExecWrapper) Name() string {
 
 func init() {
 	IExecManager.dict = make(map[string]*ExecWrapper)
+	// commons-beanutils 1.8.X
 	IExecManager.Set("cb1v18", commonsBeanutils1v18)
+	// commons-beanutils 1.9.X
 	IExecManager.Set("cb1v19", commonsBeanutils1v19)
+	// CVE-2020-14644 weblogic 12.2.1.4.0
 	IExecManager.Set("wl1", weblogic1)
 }
 
