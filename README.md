@@ -3,6 +3,7 @@ Logi is a LDAP/MySQL server focusing on pingback deserialize recon and exploit.
 
 
 - [☕️LOGI](#️logi)
+  - [免责声明](#免责声明)
   - [✨Get started](#get-started)
   - [⚙️How it work](#️how-it-work)
   - [🚀Examples](#examples)
@@ -10,6 +11,13 @@ Logi is a LDAP/MySQL server focusing on pingback deserialize recon and exploit.
     - [🐬MySQL](#mysql)
   - [🔮Image](#image)
   - [💻See also](#see-also)
+
+## 免责声明
+该工具仅用于安全自查检测。
+
+由于传播、利用此工具所提供的信息而造成的任何直接或者间接的后果及损失，均由使用者本人负责，作者不为此承担任何责任。
+
+本人拥有对此工具的修改和解释权。未经网络安全部门及相关部门允许，不得善自使用本工具进行任何攻击活动，不得以任何方式将其用于商业目的。
 
 ## ✨Get started
 Download logi from [release](https://github.com/cokeBeer/logi/releases), or use `go install`
