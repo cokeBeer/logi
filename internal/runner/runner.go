@@ -133,7 +133,7 @@ func (r *Runner) Run() {
 
 	if r.s.Type == server.TYPE_LDAP {
 
-		r.s.StartMySQL()
+		r.s.StartLDAP()
 
 	} else if r.s.Type == server.TYPE_MYSQL {
 
